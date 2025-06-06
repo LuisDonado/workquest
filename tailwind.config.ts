@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
-export default {
+const config: Config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
@@ -10,7 +10,6 @@ export default {
       },
       colors: {
         primary: {
-          // Customize it on globals.css :root
           50: 'rgb(var(--tw-color-primary-50) / <alpha-value>)',
           100: 'rgb(var(--tw-color-primary-100) / <alpha-value>)',
           200: 'rgb(var(--tw-color-primary-200) / <alpha-value>)',
@@ -38,12 +37,8 @@ export default {
           },
         },
         shimmer: {
-          '0%': {
-            backgroundPosition: '-700px 0',
-          },
-          '100%': {
-            backgroundPosition: '700px 0',
-          },
+          '0%': { backgroundPosition: '-700px 0' },
+          '100%': { backgroundPosition: '700px 0' },
         },
       },
       animation: {
@@ -53,4 +48,6 @@ export default {
     },
   },
   plugins: [require('@tailwindcss/forms')],
-} satisfies Config;
+};
+
+export default config;
