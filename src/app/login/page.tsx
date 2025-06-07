@@ -1,6 +1,7 @@
 "use client";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -57,6 +58,14 @@ export default function LoginPage() {
         >
           Ingresar
         </button>
+
+        {/* Enlace a registro */}
+        <p className="text-center text-sm mt-4">
+          ¿No tienes cuenta?{" "}
+          <Link href="/register" className="text-blue-600 hover:underline">
+            Regístrate aquí
+          </Link>
+        </p>
       </form>
     </main>
   );
