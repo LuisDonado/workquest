@@ -18,9 +18,9 @@ export default function RegisterPage() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      router.push("/dashboard");// o "/login" si prefieres redirigir primero al login
     } catch (err) {
-      setError("No se pudo registrar. Intenta con otro correo.");
+      setError("No se pudo crear el usuario. Verifica los datos.");
     }
   };
 
@@ -30,7 +30,7 @@ export default function RegisterPage() {
         onSubmit={handleRegister}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Registro</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Crear cuenta</h2>
 
         {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
