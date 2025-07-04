@@ -1,72 +1,151 @@
 'use client';
 
-import Head from 'next/head';
-import * as React from 'react';
-import '@/lib/env';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import ArrowLink from '@/components/links/ArrowLink';
-import ButtonLink from '@/components/links/ButtonLink';
-import UnderlineLink from '@/components/links/UnderlineLink';
-import UnstyledLink from '@/components/links/UnstyledLink';
-
-/**
- * SVGR Support
- * Caveat: No React Props Type.
- *
- * You can override the next-env if the type is important to you
- * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
- */
-import Logo from '~/svg/Logo.svg';
-
-// !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
-// Before you begin editing, follow all comments with `STARTERCONF`,
-// to customize the default configuration.
+import { auth } from '@/lib/firebase';
 
 export default function HomePage() {
+  const router = useRouter();
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [email, setEmail] = useState('');
+  const [empresa, setEmpresa] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [password, setPassword] = useState(''); // oculto pero necesario
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password || 'usuario123');
+      router.push('/dashboard');
+    } catch (err) {
+      setError('No se pudo crear el usuario. Verifica los datos.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <main>
-      <Head>
-        <title>Hi</title>
-      </Head>
-      <section className='bg-white'>
-        <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
-          <Logo className='w-16' />
-          <h1 className='mt-4'>Next.js + Tailwind CSS + TypeScript Starter</h1>
-          <p className='mt-2 text-sm text-gray-800'>
-            A starter for Next.js, Tailwind CSS, and TypeScript with Absolute
-            Import, Seo, Link component, pre-configured with Husky{' '}
-          </p>
-          <p className='mt-2 text-sm text-gray-700'>
-            <ArrowLink href='https://github.com/theodorusclarence/ts-nextjs-tailwind-starter'>
-              See the repository
-            </ArrowLink>
-          </p>
+    <main className="min-h-screen flex flex-col md:flex-row bg-white">
+      {/* Columna izquierda: Información */}
+      <div className="w-full md:w-1/2 p-10 space-y-8 bg-white">
+        <h1 className="text-4xl font-extrabold text-gray-900">
+          Sistema de gestión de <span className="text-blue-600">tareas gamificadas</span>
+        </h1>
 
-          <ButtonLink className='mt-6' href='/components' variant='light'>
-            See all components
-          </ButtonLink>
-
-          <UnstyledLink
-            href='https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Ftheodorusclarence%2Fts-nextjs-tailwind-starter'
-            className='mt-4'
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              width='92'
-              height='32'
-              src='https://vercel.com/button'
-              alt='Deploy with Vercel'
-            />
-          </UnstyledLink>
-
-          <footer className='absolute bottom-2 text-gray-700'>
-            © {new Date().getFullYear()} By{' '}
-            <UnderlineLink href='https://theodorusclarence.com?ref=tsnextstarter'>
-              Dr Technologies
-            </UnderlineLink>
-          </footer>
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-semibold text-gray-700 mb-1">
+              🎯 Logros y progreso en tiempo real
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Recibe informes automáticos con tu evolución semanal.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-700 mb-1">
+              ⚙️ Tareas dinámicas y medibles
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Interactúa con misiones que se adaptan a tus metas personales y laborales.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-700 mb-1">
+              🔗 Integraciones
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Compatible con herramientas de productividad y equipos remotos.
+            </p>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Columna derecha: Formulario */}
+      <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-10">
+        <form
+          onSubmit={handleRegister}
+          className="bg-white w-full max-w-md shadow-lg rounded-lg p-8 space-y-4"
+        >
+          <h2 className="text-xl font-semibold text-center">
+            Prueba WorkQuest gratis <br /> durante 14 días
+          </h2>
+
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="w-1/2 border rounded p-2"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Apellido"
+              value={apellido}
+              onChange={(e) => setApellido(e.target.value)}
+              className="w-1/2 border rounded p-2"
+              required
+            />
+          </div>
+
+          <input
+            type="email"
+            placeholder="Email de negocios"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border rounded p-2"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Empresa"
+            value={empresa}
+            onChange={(e) => setEmpresa(e.target.value)}
+            className="w-full border rounded p-2"
+          />
+          <input
+            type="tel"
+            placeholder="Número de teléfono"
+            value={telefono}
+            onChange={(e) => setTelefono(e.target.value)}
+            className="w-full border rounded p-2"
+          />
+
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border rounded p-2"
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 transition"
+            disabled={loading}
+          >
+            {loading ? 'Registrando...' : 'REGÍSTRESE GRATIS'}
+          </button>
+
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Al registrarme, acepto los{' '}
+            <span className="underline cursor-pointer">Términos y condiciones</span> y la{' '}
+            <span className="underline cursor-pointer">Política de privacidad</span>.
+          </p>
+        </form>
+      </div>
     </main>
   );
 }

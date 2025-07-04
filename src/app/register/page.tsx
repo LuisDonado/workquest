@@ -1,31 +1,32 @@
-"use client";
+'use client';
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import { auth } from "@/lib/firebase";
+import { auth } from '@/lib/firebase';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");// o "/login" si prefieres redirigir primero al login
+      router.push('/dashboard'); // o '/login' si prefieres redirigir primero al login
     } catch (err) {
-      setError("No se pudo crear el usuario. Verifica los datos.");
+      setError('No se pudo crear el usuario. Verifica los datos.');
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100">
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <form
         onSubmit={handleRegister}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
@@ -57,6 +58,13 @@ export default function RegisterPage() {
         >
           Registrarse
         </button>
+
+        <p className="text-center text-sm mt-4">
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Inicia sesión
+          </Link>
+        </p>
       </form>
     </main>
   );
